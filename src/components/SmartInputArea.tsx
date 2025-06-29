@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Send, Mic, MicOff, Square, Search, Brain, Volume2, VolumeX } from 'lucide-react';
+import InfoTooltip from './InfoTooltip';
 
 interface SmartInputAreaProps {
   inputText: string;
@@ -85,15 +86,18 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
       <div className="space-y-4">
         {/* Smart Controls Slider */}
         <div className="flex items-center justify-between">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowControls(!showControls)}
-            className="text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900 transition-all duration-200"
-          >
-            Smart Controls {showControls ? '▲' : '▼'}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowControls(!showControls)}
+              className="text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900 transition-all duration-200"
+            >
+              Smart Controls {showControls ? '▲' : '▼'}
+            </Button>
+            <InfoTooltip content="Toggle advanced input controls including web search, thinking mode, and voice output settings." />
+          </div>
           
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="animate-pulse bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
@@ -111,7 +115,10 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
             <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-900 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
               <div className="flex items-center gap-2">
                 <Search className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                <span className="text-sm font-medium">Web Search</span>
+                <div>
+                  <span className="text-sm font-medium">Web Search</span>
+                  <InfoTooltip content="Enable real-time web search to include current information and recent data in AI responses." className="ml-1" />
+                </div>
               </div>
               <Switch
                 checked={webSearch}
@@ -124,7 +131,10 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
             <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-900 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
               <div className="flex items-center gap-2">
                 <Brain className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                <span className="text-sm font-medium">Think Mode</span>
+                <div>
+                  <span className="text-sm font-medium">Think Mode</span>
+                  <InfoTooltip content="Activates deeper reasoning process. The AI will take extra time to analyze complex problems step-by-step." className="ml-1" />
+                </div>
               </div>
               <Switch
                 checked={thinkingMode}
@@ -141,7 +151,10 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
                 ) : (
                   <VolumeX className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                 )}
-                <span className="text-sm font-medium">Voice Output</span>
+                <div>
+                  <span className="text-sm font-medium">Voice Output</span>
+                  <InfoTooltip content="Enable text-to-speech for AI responses. The AI will read answers aloud using voice synthesis." className="ml-1" />
+                </div>
               </div>
               <Switch
                 checked={voiceOutput}
@@ -164,37 +177,43 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
           />
           
           {/* Voice Input Button */}
-          <Button
-            type="button"
-            onClick={isRecording ? stopRecording : startRecording}
-            disabled={isProcessing}
-            className={`absolute bottom-3 right-16 transition-all duration-300 hover:scale-110 ${
-              isRecording 
-                ? 'bg-red-600 hover:bg-red-700 animate-pulse shadow-lg shadow-red-200 dark:shadow-red-900' 
-                : 'bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-200 dark:shadow-purple-900'
-            }`}
-            size="sm"
-          >
-            {isRecording ? (
-              <Square className="h-4 w-4" />
-            ) : (
-              <Mic className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="absolute bottom-3 right-16 flex items-center gap-1">
+            <Button
+              type="button"
+              onClick={isRecording ? stopRecording : startRecording}
+              disabled={isProcessing}
+              className={`transition-all duration-300 hover:scale-110 ${
+                isRecording 
+                  ? 'bg-red-600 hover:bg-red-700 animate-pulse shadow-lg shadow-red-200 dark:shadow-red-900' 
+                  : 'bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-200 dark:shadow-purple-900'
+              }`}
+              size="sm"
+            >
+              {isRecording ? (
+                <Square className="h-4 w-4" />
+              ) : (
+                <Mic className="h-4 w-4" />
+              )}
+            </Button>
+            <InfoTooltip content="Click to start/stop voice recording. Your speech will be converted to text automatically." />
+          </div>
 
           {/* Send Button */}
-          <Button
-            onClick={onSend}
-            disabled={!inputText.trim() || isProcessing}
-            className="absolute bottom-3 right-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 transition-all duration-300 hover:scale-110 shadow-lg shadow-green-200 dark:shadow-green-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-            size="sm"
-          >
-            {isProcessing ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="absolute bottom-3 right-3 flex items-center gap-1">
+            <Button
+              onClick={onSend}
+              disabled={!inputText.trim() || isProcessing}
+              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 transition-all duration-300 hover:scale-110 shadow-lg shadow-green-200 dark:shadow-green-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              size="sm"
+            >
+              {isProcessing ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+            </Button>
+            <InfoTooltip content="Send your message to the AI. You can also press Enter to send." />
+          </div>
         </div>
 
         {/* Active Features Indicator */}

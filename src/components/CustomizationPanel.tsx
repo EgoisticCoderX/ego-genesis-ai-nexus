@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Brain, Settings } from 'lucide-react';
 import { CustomizationSettings } from '../types/ego';
+import InfoTooltip from './InfoTooltip';
 
 interface CustomizationPanelProps {
   customization: CustomizationSettings;
@@ -25,16 +26,20 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
   };
 
   return (
-    <Card className="p-4">
+    <Card className="p-4 bg-card dark:bg-gray-800 border-border dark:border-gray-700">
       <div className="space-y-6">
         <div className="flex items-center gap-2">
-          <Settings className="h-4 w-4 text-green-600" />
+          <Settings className="h-4 w-4 text-green-600 dark:text-green-400" />
           <h3 className="font-semibold text-sm">Customization</h3>
+          <InfoTooltip content="Customize AI response style, behavior, and advanced features to match your preferences." />
         </div>
 
         {/* Tone Selection */}
         <div className="space-y-2">
-          <Label className="text-xs font-medium">Response Tone</Label>
+          <div className="flex items-center gap-2">
+            <Label className="text-xs font-medium">Response Tone</Label>
+            <InfoTooltip content="Controls the personality and style of AI responses - from professional business communication to casual conversation." />
+          </div>
           <Select 
             value={customization.tone} 
             onValueChange={(value) => updateSetting('tone', value)}
@@ -42,7 +47,7 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
             <SelectTrigger className="h-8">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-popover dark:bg-gray-800 border-border dark:border-gray-700">
               <SelectItem value="professional">Professional</SelectItem>
               <SelectItem value="casual">Casual</SelectItem>
               <SelectItem value="creative">Creative</SelectItem>
@@ -55,7 +60,10 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
         {/* Verbosity Slider */}
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <Label className="text-xs font-medium">Verbosity</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-xs font-medium">Verbosity</Label>
+              <InfoTooltip content="Adjusts response length - lower values give concise answers, higher values provide detailed explanations." />
+            </div>
             <span className="text-xs text-gray-500">{customization.verbosity}%</span>
           </div>
           <Slider
@@ -73,11 +81,14 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
         </div>
 
         {/* Thinking Mode */}
-        <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-100">
-          <Brain className="h-4 w-4 text-purple-600" />
+        <div className="flex items-center space-x-3 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-100 dark:border-purple-800">
+          <Brain className="h-4 w-4 text-purple-600 dark:text-purple-400" />
           <div className="flex-1">
-            <Label className="text-xs font-medium text-purple-800">Thinking Mode</Label>
-            <p className="text-xs text-purple-600 mt-1">Enable deeper reasoning</p>
+            <div className="flex items-center gap-2">
+              <Label className="text-xs font-medium text-purple-800 dark:text-purple-300">Thinking Mode</Label>
+              <InfoTooltip content="Enables deeper analysis and reasoning. The AI takes more time to think through complex problems step-by-step before responding." />
+            </div>
+            <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">Enable deeper reasoning</p>
           </div>
           <Switch
             checked={customization.thinkingMode}
@@ -87,9 +98,12 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
 
         {/* Web Search Toggle */}
         <div className="flex items-center justify-between">
-          <div>
-            <Label className="text-xs font-medium">Web Search</Label>
-            <p className="text-xs text-gray-500">Include web results</p>
+          <div className="flex items-center gap-2">
+            <div>
+              <Label className="text-xs font-medium">Web Search</Label>
+              <p className="text-xs text-gray-500">Include web results</p>
+            </div>
+            <InfoTooltip content="When enabled, the AI can search the web for current information and include real-time data in responses." />
           </div>
           <Switch
             checked={customization.webSearch}
@@ -100,7 +114,10 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
         {/* Temperature Slider */}
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <Label className="text-xs font-medium">Creativity</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-xs font-medium">Creativity</Label>
+              <InfoTooltip content="Controls response creativity - lower values are more focused and predictable, higher values are more creative and varied." />
+            </div>
             <span className="text-xs text-gray-500">{customization.temperature.toFixed(1)}</span>
           </div>
           <Slider

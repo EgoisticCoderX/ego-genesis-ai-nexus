@@ -40,19 +40,12 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -102,6 +95,37 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Ensure full dark mode coverage */
+  .dark {
+    color-scheme: dark;
+  }
+
+  .dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+
+  .dark html {
+    @apply bg-gray-900;
+  }
+
+  /* Dark mode scrollbars */
+  .dark::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .dark::-webkit-scrollbar-track {
+    background: rgb(31, 41, 55);
+  }
+
+  .dark::-webkit-scrollbar-thumb {
+    background: rgb(75, 85, 99);
+    border-radius: 4px;
+  }
+
+  .dark::-webkit-scrollbar-thumb:hover {
+    background: rgb(107, 114, 128);
   }
 }
 
@@ -173,22 +197,4 @@ All colors MUST be HSL.
 /* Smooth transitions for all interactive elements */
 * {
   transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Custom scrollbar for dark mode */
-.dark::-webkit-scrollbar {
-  width: 8px;
-}
-
-.dark::-webkit-scrollbar-track {
-  background: rgb(31, 41, 55);
-}
-
-.dark::-webkit-scrollbar-thumb {
-  background: rgb(75, 85, 99);
-  border-radius: 4px;
-}
-
-.dark::-webkit-scrollbar-thumb:hover {
-  background: rgb(107, 114, 128);
 }

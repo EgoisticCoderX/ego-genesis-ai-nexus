@@ -146,7 +146,11 @@ const EgoAssistant = () => {
       }`}>
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent mb-2 animate-fade-in">
+            <h1 className={`text-4xl font-bold mb-2 animate-fade-in ${
+              isDarkMode 
+                ? 'bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent'
+                : 'bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent'
+            }`}>
               Ego AI Assistant
             </h1>
           </div>
@@ -172,10 +176,16 @@ const EgoAssistant = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8 animate-fade-in">
           <div className="text-center flex-1">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent mb-2">
+            <h1 className={`text-4xl font-bold mb-2 ${
+              isDarkMode 
+                ? 'bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent'
+                : 'bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent'
+            }`}>
               Ego AI Assistant
             </h1>
-            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>
+            <p className={`transition-colors duration-300 ${
+              isDarkMode ? 'text-gray-300' : 'text-gray-600'
+            }`}>
               Multimodal AI with dynamic model selection
             </p>
           </div>
@@ -185,7 +195,11 @@ const EgoAssistant = () => {
             
             {user ? (
               <div className="flex items-center gap-2">
-                <Badge className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
+                <Badge className={`${
+                  isDarkMode 
+                    ? 'bg-green-900 text-green-300 border-green-700'
+                    : 'bg-green-100 text-green-700 border-green-200'
+                }`}>
                   <User className="h-3 w-3 mr-1" />
                   {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                 </Badge>

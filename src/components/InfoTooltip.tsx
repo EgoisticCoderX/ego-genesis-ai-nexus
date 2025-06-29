@@ -15,9 +15,10 @@ const InfoTooltip: React.FC<InfoTooltipProps> = ({ content, className = "" }) =>
         <TooltipTrigger asChild>
           <button 
             type="button"
-            className={`text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors ${className}`}
+            className={`inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors ${className}`}
           >
             <Info className="h-3 w-3" />
+            <span>info</span>
           </button>
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-xs text-sm">

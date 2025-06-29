@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -96,7 +95,7 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
             >
               Smart Controls {showControls ? '▲' : '▼'}
             </Button>
-            <InfoTooltip content="Toggle advanced input controls including web search, thinking mode, and voice output settings." />
+            <InfoTooltip content="Configure advanced AI features including web search, deep thinking mode, and voice output settings to enhance your AI interaction experience." />
           </div>
           
           <div className="flex items-center gap-2">
@@ -117,7 +116,7 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
                 <Search className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <div>
                   <span className="text-sm font-medium">Web Search</span>
-                  <InfoTooltip content="Enable real-time web search to include current information and recent data in AI responses." className="ml-1" />
+                  <InfoTooltip content="Enable real-time web search to include current information, news, and recent data in AI responses for more accurate and up-to-date answers." className="ml-1" />
                 </div>
               </div>
               <Switch
@@ -133,7 +132,7 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
                 <Brain className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                 <div>
                   <span className="text-sm font-medium">Think Mode</span>
-                  <InfoTooltip content="Activates deeper reasoning process. The AI will take extra time to analyze complex problems step-by-step." className="ml-1" />
+                  <InfoTooltip content="Activates deeper reasoning process where the AI takes extra time to analyze complex problems step-by-step, providing more thoughtful and detailed responses." className="ml-1" />
                 </div>
               </div>
               <Switch
@@ -153,7 +152,7 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
                 )}
                 <div>
                   <span className="text-sm font-medium">Voice Output</span>
-                  <InfoTooltip content="Enable text-to-speech for AI responses. The AI will read answers aloud using voice synthesis." className="ml-1" />
+                  <InfoTooltip content="Enable text-to-speech functionality for AI responses. The AI will read answers aloud using voice synthesis for hands-free interaction." className="ml-1" />
                 </div>
               </div>
               <Switch
@@ -177,7 +176,7 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
           />
           
           {/* Voice Input Button */}
-          <div className="absolute bottom-3 right-16 flex items-center gap-1">
+          <div className="absolute bottom-3 right-16">
             <Button
               type="button"
               onClick={isRecording ? stopRecording : startRecording}
@@ -195,11 +194,10 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
                 <Mic className="h-4 w-4" />
               )}
             </Button>
-            <InfoTooltip content="Click to start/stop voice recording. Your speech will be converted to text automatically." />
           </div>
 
           {/* Send Button */}
-          <div className="absolute bottom-3 right-3 flex items-center gap-1">
+          <div className="absolute bottom-3 right-3">
             <Button
               onClick={onSend}
               disabled={!inputText.trim() || isProcessing}
@@ -212,7 +210,6 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
                 <Send className="h-4 w-4" />
               )}
             </Button>
-            <InfoTooltip content="Send your message to the AI. You can also press Enter to send." />
           </div>
         </div>
 

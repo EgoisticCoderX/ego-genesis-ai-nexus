@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { User, LogIn, LogOut } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 import ChatHistory from './ChatHistory';
 import ResponseTimer from './ResponseTimer';
 import ModelSelector from './ModelSelector';
@@ -12,6 +14,7 @@ import CustomizationPanel from './CustomizationPanel';
 import SmartInputArea from './SmartInputArea';
 import QuotaManager from './QuotaManager';
 import ThemeToggle from './ThemeToggle';
+import AuthModal from './AuthModal';
 import { useEgoStore } from '../hooks/useEgoStore';
 
 const EgoAssistant = () => {
@@ -32,8 +35,8 @@ const EgoAssistant = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [responseStartTime, setResponseStartTime] = useState<number | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [voiceOutput, setVoiceOutput] = useState(false);
   
   // Quota management
@@ -50,6 +53,21 @@ const EgoAssistant = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [isDarkMode]);
+
+  // Authentication state management
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSend = async () => {
     if (!inputText.trim() || weeklyUsage >= maxWeeklyQuota) return;
@@ -105,15 +123,14 @@ const EgoAssistant = () => {
     setInputText(prev => prev + ' ' + text);
   };
 
-  const handleLogin = () => {
-    // Simulate login - in real app, integrate with Supabase
-    setIsLoggedIn(true);
-    setUsername('Demo User');
+  const handleAuthSuccess = (userData: SupabaseUser) => {
+    setUser(userData);
+    setIsAuthModalOpen(false);
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUsername('');
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
   };
 
   const handleUpgrade = () => {
@@ -166,18 +183,18 @@ const EgoAssistant = () => {
           <div className="flex items-center gap-4">
             <ThemeToggle isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
             
-            {isLoggedIn ? (
+            {user ? (
               <div className="flex items-center gap-2">
                 <Badge className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
                   <User className="h-3 w-3 mr-1" />
-                  {username}
+                  {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                 </Badge>
                 <Button variant="outline" size="sm" onClick={handleLogout}>
                   <LogOut className="h-4 w-4" />
                 </Button>
               </div>
             ) : (
-              <Button variant="outline" size="sm" onClick={handleLogin}>
+              <Button variant="outline" size="sm" onClick={() => setIsAuthModalOpen(true)}>
                 <LogIn className="h-4 w-4 mr-2" />
                 Login
               </Button>
@@ -241,6 +258,13 @@ const EgoAssistant = () => {
           </div>
         </div>
       </div>
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={handleAuthSuccess}
+      />
     </div>
   );
 };

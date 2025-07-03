@@ -27,39 +27,41 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, isThinking }) => {
 
   if (messages.length === 0) {
     return (
-      <Card className="p-8 text-center bg-gradient-to-br from-green-50 to-emerald-50 border-green-100">
-        <div className="space-y-4">
-          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-            <Bot className="h-8 w-8 text-green-600" />
+      <div className="h-full flex items-center justify-center">
+        <Card className="p-8 text-center bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-teal-500/10 border border-white/10 backdrop-blur-xl max-w-md">
+          <div className="space-y-4">
+            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">
+              <Bot className="h-8 w-8 text-blue-400" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-2">Welcome to Ego AI</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Your premium AI assistant is ready. Ask questions, upload images, or record voice messages to get started.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Badge className="bg-blue-500/20 border border-blue-500/30 text-blue-300 backdrop-blur-sm">
+                Text Chat
+              </Badge>
+              <Badge className="bg-purple-500/20 border border-purple-500/30 text-purple-300 backdrop-blur-sm">
+                Deep Thinking
+              </Badge>
+              <Badge className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 backdrop-blur-sm">
+                Web Search
+              </Badge>
+              <Badge className="bg-teal-500/20 border border-teal-500/30 text-teal-300 backdrop-blur-sm">
+                Voice Input
+              </Badge>
+            </div>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-green-800 mb-2">Welcome to Ego AI</h3>
-            <p className="text-green-600 max-w-md mx-auto">
-              Your multimodal AI assistant is ready. Ask questions, upload images, or record voice messages to get started.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2 justify-center">
-            <Badge variant="outline" className="border-green-200 text-green-700">
-              Text Chat
-            </Badge>
-            <Badge variant="outline" className="border-blue-200 text-blue-700">
-              Image Analysis
-            </Badge>
-            <Badge variant="outline" className="border-purple-200 text-purple-700">
-              Voice Input
-            </Badge>
-            <Badge variant="outline" className="border-orange-200 text-orange-700">
-              Web Search
-            </Badge>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <Card className="max-h-[600px] overflow-y-auto">
-      <div className="p-4 space-y-4">
+    <Card className="h-full overflow-hidden bg-black/20 backdrop-blur-xl border border-white/10">
+      <div className="h-full overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -67,11 +69,11 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, isThinking }) => {
               message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
             }`}
           >
-            <Avatar className="h-8 w-8 mt-1">
+            <Avatar className="h-8 w-8 mt-1 border border-white/20 backdrop-blur-sm">
               <AvatarFallback className={
                 message.role === 'user' 
-                  ? 'bg-blue-100 text-blue-600' 
-                  : 'bg-green-100 text-green-600'
+                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' 
+                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
               }>
                 {message.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
               </AvatarFallback>
@@ -80,21 +82,21 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, isThinking }) => {
             <div className={`flex-1 max-w-[80%] ${
               message.role === 'user' ? 'text-right' : 'text-left'
             }`}>
-              <div className={`inline-block p-3 rounded-lg ${
+              <div className={`inline-block p-4 rounded-2xl backdrop-blur-sm border ${
                 message.role === 'user'
-                  ? 'bg-blue-500 text-white rounded-br-sm'
-                  : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                  ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white border-blue-500/30 rounded-br-sm'
+                  : 'bg-white/5 text-gray-100 border-white/20 rounded-bl-sm'
               }`}>
                 {message.image && (
                   <img
                     src={message.image}
                     alt="Uploaded content"
-                    className="max-w-48 max-h-48 rounded mb-2 object-cover"
+                    className="max-w-48 max-h-48 rounded-lg mb-2 object-cover border border-white/20"
                   />
                 )}
-                <div className="whitespace-pre-wrap">{message.content}</div>
+                <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
               </div>
-              <div className={`text-xs text-gray-500 mt-1 ${
+              <div className={`text-xs text-gray-400 mt-2 ${
                 message.role === 'user' ? 'text-right' : 'text-left'
               }`}>
                 {formatTime(message.timestamp)}
@@ -105,14 +107,14 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, isThinking }) => {
 
         {isThinking && (
           <div className="flex gap-3">
-            <Avatar className="h-8 w-8 mt-1">
-              <AvatarFallback className="bg-purple-100 text-purple-600">
+            <Avatar className="h-8 w-8 mt-1 border border-purple-500/30 backdrop-blur-sm">
+              <AvatarFallback className="bg-purple-500/20 text-purple-300">
                 <Brain className="h-4 w-4 animate-pulse" />
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <div className="inline-block p-3 rounded-lg bg-purple-50 border border-purple-200 rounded-bl-sm">
-                <div className="flex items-center gap-2 text-purple-700">
+              <div className="inline-block p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 rounded-bl-sm backdrop-blur-sm">
+                <div className="flex items-center gap-3 text-purple-300">
                   <div className="flex gap-1">
                     <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                     <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>

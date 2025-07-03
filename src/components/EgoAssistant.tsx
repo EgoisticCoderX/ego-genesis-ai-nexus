@@ -1,10 +1,10 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
-import { User, LogIn, LogOut, ChevronLeft, ChevronRight, History, Settings, Crown, Zap } from 'lucide-react';
+import { User, LogIn, LogOut, ChevronLeft, ChevronRight, History, Settings, Crown, Zap, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import ChatHistory from './ChatHistory';
@@ -34,7 +34,7 @@ const EgoAssistant = () => {
   const [inputText, setInputText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [responseStartTime, setResponseStartTime] = useState<number | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [voiceOutput, setVoiceOutput] = useState(false);
@@ -54,12 +54,8 @@ const EgoAssistant = () => {
 
   // Apply dark mode to document
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
+    document.documentElement.classList.add('dark');
+  }, []);
 
   // Authentication state management
   useEffect(() => {
@@ -140,10 +136,10 @@ const EgoAssistant = () => {
 
   if (weeklyUsage >= maxWeeklyQuota) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-2 animate-fade-in bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold mb-2 animate-fade-in bg-gradient-to-r from-blue-400 via-purple-400 to-teal-400 bg-clip-text text-transparent">
               Ego AI Assistant
             </h1>
           </div>
@@ -159,17 +155,18 @@ const EgoAssistant = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="flex items-center justify-between px-4 py-3">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex flex-col overflow-hidden">
+      {/* Premium Header */}
+      <header className="relative border-b border-white/10 bg-black/20 backdrop-blur-xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-teal-500/10" />
+        <div className="relative flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             {/* Left Sidebar Toggle */}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowLeftSidebar(!showLeftSidebar)}
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-200"
             >
               <ChevronLeft className={`h-4 w-4 transition-transform ${showLeftSidebar ? 'rotate-0' : 'rotate-180'}`} />
             </Button>
@@ -179,13 +176,17 @@ const EgoAssistant = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowChatHistory(!showChatHistory)}
-              className={`flex items-center gap-2 ${showChatHistory ? 'bg-accent' : ''}`}
+              className={`flex items-center gap-2 px-3 h-9 transition-all duration-200 ${
+                showChatHistory 
+                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' 
+                  : 'text-gray-400 hover:text-white hover:bg-white/10'
+              }`}
             >
               <History className="h-4 w-4" />
-              {showChatHistory ? 'Hide History' : 'Show History'}
+              <span className="text-sm">Chat</span>
             </Button>
             
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-teal-400 bg-clip-text text-transparent">
               Ego AI
             </h1>
           </div>
@@ -194,17 +195,27 @@ const EgoAssistant = () => {
             <ThemeToggle isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
             
             {user ? (
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">
+              <div className="flex items-center gap-3">
+                <Badge className="bg-white/10 border border-white/20 text-white backdrop-blur-sm">
                   <User className="h-3 w-3 mr-1" />
                   {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                 </Badge>
-                <Button variant="outline" size="sm" onClick={handleLogout}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="border-white/20 text-white hover:bg-white/10"
+                >
                   <LogOut className="h-4 w-4" />
                 </Button>
               </div>
             ) : (
-              <Button variant="outline" size="sm" onClick={() => setIsAuthModalOpen(true)}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setIsAuthModalOpen(true)}
+                className="border-white/20 text-white hover:bg-white/10"
+              >
                 <LogIn className="h-4 w-4 mr-2" />
                 Login
               </Button>
@@ -215,7 +226,11 @@ const EgoAssistant = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowRightSidebar(!showRightSidebar)}
-              className="h-8 w-8 p-0"
+              className={`h-9 w-9 p-0 transition-all duration-200 ${
+                showRightSidebar 
+                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' 
+                  : 'text-gray-400 hover:text-white hover:bg-white/10'
+              }`}
             >
               <Settings className="h-4 w-4" />
             </Button>
@@ -226,23 +241,26 @@ const EgoAssistant = () => {
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
-        <div className={`transition-all duration-300 border-r bg-card/50 ${
+        <div className={`transition-all duration-300 ${
           showLeftSidebar ? 'w-80' : 'w-0'
         } overflow-hidden`}>
-          <div className="p-4 space-y-4 h-full flex flex-col">
+          <div className="w-80 h-full bg-black/20 backdrop-blur-xl border-r border-white/10 p-4 space-y-4 flex flex-col">
+            {/* Model Selector */}
             <ModelSelector 
               selectedModel={selectedModel}
               onModelChange={setSelectedModel}
             />
             
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3 text-sm">Response Timer</h3>
+            {/* Response Timer */}
+            <Card className="p-4 bg-white/5 border border-white/10 backdrop-blur-sm">
+              <h3 className="font-semibold mb-3 text-sm text-white">Response Timer</h3>
               <ResponseTimer 
                 startTime={responseStartTime}
                 isActive={isProcessing}
               />
             </Card>
 
+            {/* Quota Manager */}
             <div className="flex-1">
               <QuotaManager
                 currentUsage={weeklyUsage}
@@ -253,15 +271,15 @@ const EgoAssistant = () => {
             </div>
 
             {/* Premium/Free Toggle */}
-            <Card className="p-4">
+            <Card className="p-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {isPremium ? (
-                    <Crown className="h-4 w-4 text-yellow-500" />
+                    <Crown className="h-4 w-4 text-yellow-400" />
                   ) : (
-                    <Zap className="h-4 w-4 text-blue-500" />
+                    <Zap className="h-4 w-4 text-blue-400" />
                   )}
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-white">
                     {isPremium ? 'Premium' : 'Free'} AI
                   </span>
                 </div>
@@ -276,8 +294,8 @@ const EgoAssistant = () => {
         </div>
 
         {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 p-4 space-y-4 overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 p-6 space-y-6 overflow-hidden flex flex-col">
             {/* Chat History */}
             {showChatHistory && (
               <div className="flex-1 min-h-0">
@@ -308,10 +326,10 @@ const EgoAssistant = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div className={`transition-all duration-300 border-l bg-card/50 ${
+        <div className={`transition-all duration-300 ${
           showRightSidebar ? 'w-80' : 'w-0'
         } overflow-hidden`}>
-          <div className="p-4 h-full">
+          <div className="w-80 h-full bg-black/20 backdrop-blur-xl border-l border-white/10 p-4">
             <CustomizationPanel
               customization={customization}
               onCustomizationChange={updateCustomization}

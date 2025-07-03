@@ -1,20 +1,20 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { User, LogIn, LogOut } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { User, LogIn, LogOut, ChevronLeft, ChevronRight, History, Settings, Crown, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import ChatHistory from './ChatHistory';
 import ResponseTimer from './ResponseTimer';
 import ModelSelector from './ModelSelector';
-import CustomizationPanel from './CustomizationPanel';
 import SmartInputArea from './SmartInputArea';
 import QuotaManager from './QuotaManager';
 import ThemeToggle from './ThemeToggle';
 import AuthModal from './AuthModal';
+import AIBehaviorPanel from './AIBehaviorPanel';
 import { useEgoStore } from '../hooks/useEgoStore';
 
 const EgoAssistant = () => {
@@ -38,12 +38,19 @@ const EgoAssistant = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [voiceOutput, setVoiceOutput] = useState(false);
+  const [behavior, setBehavior] = useState('');
+  
+  // Sidebar states
+  const [showLeftSidebar, setShowLeftSidebar] = useState(true);
+  const [showRightSidebar, setShowRightSidebar] = useState(true);
+  const [showChatHistory, setShowChatHistory] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
   
   // Quota management
   const [weeklyUsage, setWeeklyUsage] = useState(0);
   const maxWeeklyQuota = 7;
   const resetDate = new Date();
-  resetDate.setDate(resetDate.getDate() + (7 - resetDate.getDay())); // Next Sunday
+  resetDate.setDate(resetDate.getDate() + (7 - resetDate.getDay()));
 
   // Apply dark mode to document
   useEffect(() => {
@@ -56,12 +63,10 @@ const EgoAssistant = () => {
 
   // Authentication state management
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
@@ -75,11 +80,8 @@ const EgoAssistant = () => {
     const timestamp = Date.now();
     setResponseStartTime(timestamp);
     setIsProcessing(true);
-
-    // Increment usage
     setWeeklyUsage(prev => prev + 1);
 
-    // Add user message
     addMessage({
       id: `msg-${timestamp}`,
       role: 'user',
@@ -87,19 +89,20 @@ const EgoAssistant = () => {
       timestamp
     });
 
-    // Clear input
     setInputText('');
 
-    // Simulate AI thinking if enabled
     if (customization.thinkingMode) {
       setIsThinking(true);
       await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000));
       setIsThinking(false);
     }
 
-    // Simulate AI response
     setTimeout(() => {
-      const response = `Response from ${selectedModel?.name || 'default model'}: ${inputText}. ${customization.webSearch ? '[Web search results included]' : ''} ${customization.thinkingMode ? '[Deep analysis performed]' : ''}`;
+      let response = `Response from ${selectedModel?.name || 'default model'}: ${inputText}. ${customization.webSearch ? '[Web search results included]' : ''} ${customization.thinkingMode ? '[Deep analysis performed]' : ''}`;
+      
+      if (behavior.trim()) {
+        response += ` [Responding with ${behavior} personality]`;
+      }
       
       addMessage({
         id: `msg-${timestamp}-response`,
@@ -108,9 +111,7 @@ const EgoAssistant = () => {
         timestamp: Date.now()
       });
 
-      // Voice output simulation
       if (voiceOutput) {
-        // Simulate text-to-speech
         console.log('🔊 Voice output would play here:', response);
       }
 
@@ -139,22 +140,13 @@ const EgoAssistant = () => {
 
   if (weeklyUsage >= maxWeeklyQuota) {
     return (
-      <div className={`min-h-screen transition-all duration-500 ${
-        isDarkMode 
-          ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' 
-          : 'bg-gradient-to-br from-green-50 via-white to-emerald-50'
-      }`}>
+      <div className="min-h-screen bg-background text-foreground">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className={`text-4xl font-bold mb-2 animate-fade-in ${
-              isDarkMode 
-                ? 'bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent'
-                : 'bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent'
-            }`}>
+            <h1 className="text-4xl font-bold mb-2 animate-fade-in bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Ego AI Assistant
             </h1>
           </div>
-          
           <QuotaManager
             currentUsage={weeklyUsage}
             maxQuota={maxWeeklyQuota}
@@ -167,39 +159,43 @@ const EgoAssistant = () => {
   }
 
   return (
-    <div className={`min-h-screen transition-all duration-500 ${
-      isDarkMode 
-        ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white' 
-        : 'bg-gradient-to-br from-green-50 via-white to-emerald-50 text-gray-900'
-    }`}>
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8 animate-fade-in">
-          <div className="text-center flex-1">
-            <h1 className={`text-4xl font-bold mb-2 ${
-              isDarkMode 
-                ? 'bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent'
-                : 'bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent'
-            }`}>
-              Ego AI Assistant
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Header */}
+      <header className="border-b bg-card">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-4">
+            {/* Left Sidebar Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowLeftSidebar(!showLeftSidebar)}
+              className="h-8 w-8 p-0"
+            >
+              <ChevronLeft className={`h-4 w-4 transition-transform ${showLeftSidebar ? 'rotate-0' : 'rotate-180'}`} />
+            </Button>
+            
+            {/* Chat History Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowChatHistory(!showChatHistory)}
+              className="flex items-center gap-2"
+            >
+              <History className="h-4 w-4" />
+              History
+            </Button>
+            
+            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Ego AI
             </h1>
-            <p className={`transition-colors duration-300 ${
-              isDarkMode ? 'text-gray-300' : 'text-gray-600'
-            }`}>
-              Multimodal AI with dynamic model selection
-            </p>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <ThemeToggle isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
             
             {user ? (
               <div className="flex items-center gap-2">
-                <Badge className={`${
-                  isDarkMode 
-                    ? 'bg-green-900 text-green-300 border-green-700'
-                    : 'bg-green-100 text-green-700 border-green-200'
-                }`}>
+                <Badge variant="secondary">
                   <User className="h-3 w-3 mr-1" />
                   {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                 </Badge>
@@ -213,25 +209,33 @@ const EgoAssistant = () => {
                 Login
               </Button>
             )}
+
+            {/* Right Sidebar Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowRightSidebar(!showRightSidebar)}
+              className="h-8 w-8 p-0"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
           </div>
         </div>
+      </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Left Sidebar - Controls */}
-          <div className="lg:col-span-1 space-y-4 animate-slide-in-right">
+      {/* Main Content */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left Sidebar */}
+        <div className={`transition-all duration-300 border-r bg-card/50 ${
+          showLeftSidebar ? 'w-80' : 'w-0'
+        } overflow-hidden`}>
+          <div className="p-4 space-y-4 h-full flex flex-col">
             <ModelSelector 
               selectedModel={selectedModel}
               onModelChange={setSelectedModel}
             />
             
-            <CustomizationPanel 
-              customization={customization}
-              onCustomizationChange={updateCustomization}
-            />
-
-            <Card className={`p-4 transition-all duration-300 ${
-              isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-            }`}>
+            <Card className="p-4">
               <h3 className="font-semibold mb-3 text-sm">Response Timer</h3>
               <ResponseTimer 
                 startTime={responseStartTime}
@@ -239,35 +243,80 @@ const EgoAssistant = () => {
               />
             </Card>
 
-            <QuotaManager
-              currentUsage={weeklyUsage}
-              maxQuota={maxWeeklyQuota}
-              resetDate={resetDate}
-              onUpgradeClick={handleUpgrade}
-            />
+            <div className="flex-1">
+              <QuotaManager
+                currentUsage={weeklyUsage}
+                maxQuota={maxWeeklyQuota}
+                resetDate={resetDate}
+                onUpgradeClick={handleUpgrade}
+              />
+            </div>
+
+            {/* Premium/Free Toggle */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {isPremium ? (
+                    <Crown className="h-4 w-4 text-yellow-500" />
+                  ) : (
+                    <Zap className="h-4 w-4 text-blue-500" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {isPremium ? 'Premium' : 'Free'} AI
+                  </span>
+                </div>
+                <Switch
+                  checked={isPremium}
+                  onCheckedChange={setIsPremium}
+                  className="data-[state=checked]:bg-yellow-600"
+                />
+              </div>
+            </Card>
           </div>
+        </div>
 
-          {/* Main Chat Area */}
-          <div className="lg:col-span-3 space-y-4 animate-fade-in">
+        {/* Main Chat Area */}
+        <div className="flex-1 flex flex-col">
+          <div className="flex-1 p-4 space-y-4 overflow-hidden">
             {/* Chat History */}
-            <ChatHistory 
-              messages={messages}
-              isThinking={isThinking}
-            />
+            {showChatHistory && (
+              <div className="flex-1 min-h-0">
+                <ChatHistory 
+                  messages={messages}
+                  isThinking={isThinking}
+                />
+              </div>
+            )}
 
-            {/* Smart Input Area */}
-            <SmartInputArea
-              inputText={inputText}
-              onTextChange={setInputText}
-              onSend={handleSend}
-              isProcessing={isProcessing}
-              webSearch={customization.webSearch}
-              onWebSearchToggle={(enabled) => updateCustomization({...customization, webSearch: enabled})}
-              thinkingMode={customization.thinkingMode}
-              onThinkingModeToggle={(enabled) => updateCustomization({...customization, thinkingMode: enabled})}
+            {/* Input Area */}
+            <div className="flex-shrink-0">
+              <SmartInputArea
+                inputText={inputText}
+                onTextChange={setInputText}
+                onSend={handleSend}
+                isProcessing={isProcessing}
+                webSearch={customization.webSearch}
+                onWebSearchToggle={(enabled) => updateCustomization({...customization, webSearch: enabled})}
+                thinkingMode={customization.thinkingMode}
+                onThinkingModeToggle={(enabled) => updateCustomization({...customization, thinkingMode: enabled})}
+                voiceOutput={voiceOutput}
+                onVoiceOutputToggle={setVoiceOutput}
+                onVoiceInput={handleVoiceInput}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Right Sidebar */}
+        <div className={`transition-all duration-300 border-l bg-card/50 ${
+          showRightSidebar ? 'w-80' : 'w-0'
+        } overflow-hidden`}>
+          <div className="p-4 h-full">
+            <AIBehaviorPanel
               voiceOutput={voiceOutput}
               onVoiceOutputToggle={setVoiceOutput}
-              onVoiceInput={handleVoiceInput}
+              behavior={behavior}
+              onBehaviorChange={setBehavior}
             />
           </div>
         </div>

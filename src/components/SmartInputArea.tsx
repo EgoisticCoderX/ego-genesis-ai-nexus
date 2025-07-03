@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Send, Mic, Square, Search, Brain, Volume2, VolumeX, Image, MapPin, Paperclip, Globe } from 'lucide-react';
 import InfoTooltip from './InfoTooltip';
@@ -81,8 +82,8 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
     }
   };
 
-  const handleModeChange = (value: number[]) => {
-    const newMode = value[0];
+  const handleModeChange = (value: string) => {
+    const newMode = value === 'normal' ? 0 : value === 'think' ? 1 : 2;
     setMode(newMode);
     
     // Update corresponding toggles
@@ -90,34 +91,21 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
     onWebSearchToggle(newMode === 2);
   };
 
+  const getModeValue = () => {
+    return mode === 0 ? 'normal' : mode === 1 ? 'think' : 'search';
+  };
+
   return (
     <div className="space-y-4">
-      {/* Mode Selector */}
-      <Card className="p-4 bg-card border-border">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-foreground">Mode:</span>
-            <Badge variant="secondary" className="text-xs">
-              {modes[mode]}
-            </Badge>
-          </div>
-          <InfoTooltip content="Choose between Normal mode for standard queries, Think mode for deep analysis, or Web Search mode for real-time information." />
-        </div>
-        <div className="space-y-2">
-          <Slider
-            value={[mode]}
-            onValueChange={handleModeChange}
-            max={2}
-            min={0}
-            step={1}
-            className="w-full"
-          />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Normal</span>
-            <span>Think</span>
-            <span>Web Search</span>
-          </div>
-        </div>
+      {/* Mode Tabs */}
+      <Card className="p-3 bg-card border-border">
+        <Tabs value={getModeValue()} onValueChange={handleModeChange} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="normal" className="text-xs">Normal</TabsTrigger>
+            <TabsTrigger value="think" className="text-xs">Think</TabsTrigger>
+            <TabsTrigger value="search" className="text-xs">Web Search</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </Card>
 
       {/* Main Input Card */}

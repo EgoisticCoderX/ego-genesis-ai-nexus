@@ -129,38 +129,6 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
           </div>
         </div>
 
-        {/* Thinking Mode */}
-        <div className="flex items-center space-x-3 p-3 bg-purple-500/10 rounded-lg border border-purple-500/20 backdrop-blur-sm">
-          <Brain className="h-4 w-4 text-purple-400" />
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <Label className="text-xs font-medium text-purple-300">Thinking Mode</Label>
-              <InfoTooltip content="Enables deeper analysis and reasoning. The AI takes more time to think through complex problems step-by-step before responding." />
-            </div>
-            <p className="text-xs text-purple-400 mt-1">Enable deeper reasoning</p>
-          </div>
-          <Switch
-            checked={customization.thinkingMode}
-            onCheckedChange={(checked) => updateSetting('thinkingMode', checked)}
-            className="data-[state=checked]:bg-purple-600"
-          />
-        </div>
-
-        {/* Web Search Toggle */}
-        <div className="flex items-center justify-between p-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20 backdrop-blur-sm">
-          <div className="flex items-center gap-2">
-            <div>
-              <Label className="text-xs font-medium text-emerald-300">Web Search</Label>
-              <p className="text-xs text-emerald-400">Include web results</p>
-            </div>
-            <InfoTooltip content="When enabled, the AI can search the web for current information and include real-time data in responses." />
-          </div>
-          <Switch
-            checked={customization.webSearch}
-            onCheckedChange={(checked) => updateSetting('webSearch', checked)}
-            className="data-[state=checked]:bg-emerald-600"
-          />
-        </div>
 
         {/* Voice Output */}
         <div className="space-y-3">

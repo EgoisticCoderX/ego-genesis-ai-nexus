@@ -160,15 +160,15 @@ const EgoAssistant = () => {
       <header className="relative border-b border-white/10 bg-black/20 backdrop-blur-xl">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-teal-500/10" />
         <div className="relative flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Left Sidebar Toggle */}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowLeftSidebar(!showLeftSidebar)}
-              className="h-9 w-9 p-0 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-200"
+              className="h-9 w-9 p-0 text-gray-400 hover:text-white hover:bg-white/15 transition-all duration-300 transform hover:scale-110 rounded-xl"
             >
-              <ChevronLeft className={`h-4 w-4 transition-transform ${showLeftSidebar ? 'rotate-0' : 'rotate-180'}`} />
+              <ChevronLeft className={`h-4 w-4 transition-transform duration-300 ${showLeftSidebar ? 'rotate-0' : 'rotate-180'}`} />
             </Button>
             
             {/* Chat History Toggle */}
@@ -176,37 +176,41 @@ const EgoAssistant = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowChatHistory(!showChatHistory)}
-              className={`flex items-center gap-2 px-3 h-9 transition-all duration-200 ${
+              className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 h-9 transition-all duration-300 transform hover:scale-105 rounded-xl ${
                 showChatHistory 
-                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' 
-                  : 'text-gray-400 hover:text-white hover:bg-white/10'
+                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30 animate-glow' 
+                  : 'text-gray-400 hover:text-white hover:bg-white/15'
               }`}
             >
               <History className="h-4 w-4" />
-              <span className="text-sm">Chat</span>
+              <span className="text-xs sm:text-sm hidden sm:inline">Chat</span>
             </Button>
             
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-teal-400 bg-clip-text text-transparent">
+            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-teal-400 bg-clip-text text-transparent animate-fade-in">
               Ego AI
             </h1>
           </div>
 
-          <div className="flex items-center gap-4">
-            <ThemeToggle isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="hidden sm:block">
+              <ThemeToggle isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
+            </div>
             
             {user ? (
-              <div className="flex items-center gap-3">
-                <Badge className="bg-white/10 border border-white/20 text-white backdrop-blur-sm">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Badge className="bg-white/15 border border-white/30 text-white backdrop-blur-md rounded-full px-2 sm:px-3 py-1 transition-all duration-300 hover:scale-105 animate-fade-in">
                   <User className="h-3 w-3 mr-1" />
-                  {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                  <span className="text-xs sm:text-sm truncate max-w-20 sm:max-w-none">
+                    {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                  </span>
                 </Badge>
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={handleLogout}
-                  className="border-white/20 text-white hover:bg-white/10"
+                  className="border-white/30 text-white hover:bg-white/15 transition-all duration-300 transform hover:scale-105 rounded-xl h-8 w-8 sm:h-9 sm:w-auto sm:px-3 p-0 sm:p-2"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
               </div>
             ) : (
@@ -214,10 +218,10 @@ const EgoAssistant = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={() => setIsAuthModalOpen(true)}
-                className="border-white/20 text-white hover:bg-white/10"
+                className="border-white/30 text-white hover:bg-white/15 transition-all duration-300 transform hover:scale-105 rounded-xl px-2 sm:px-3 h-8 sm:h-9"
               >
-                <LogIn className="h-4 w-4 mr-2" />
-                Login
+                <LogIn className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+                <span className="hidden sm:inline text-xs">Login</span>
               </Button>
             )}
 
@@ -226,10 +230,10 @@ const EgoAssistant = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowRightSidebar(!showRightSidebar)}
-              className={`h-9 w-9 p-0 transition-all duration-200 ${
+              className={`h-9 w-9 p-0 transition-all duration-300 transform hover:scale-110 rounded-xl ${
                 showRightSidebar 
-                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' 
-                  : 'text-gray-400 hover:text-white hover:bg-white/10'
+                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30 animate-glow' 
+                  : 'text-gray-400 hover:text-white hover:bg-white/15'
               }`}
             >
               <Settings className="h-4 w-4" />
@@ -241,10 +245,10 @@ const EgoAssistant = () => {
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
-        <div className={`transition-all duration-300 ${
+        <div className={`transition-all duration-500 ease-in-out ${
           showLeftSidebar ? 'w-80' : 'w-0'
-        } overflow-hidden`}>
-          <div className="w-80 h-full bg-black/20 backdrop-blur-xl border-r border-white/10 p-4 space-y-4 flex flex-col">
+        } overflow-hidden animate-slide-in-right`}>
+          <div className="w-80 h-full bg-black/30 backdrop-blur-2xl border-r border-white/20 p-4 space-y-4 flex flex-col">
             {/* Model Selector */}
             <ModelSelector 
               selectedModel={selectedModel}
@@ -295,7 +299,7 @@ const EgoAssistant = () => {
 
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col min-w-0">
-          <div className="flex-1 p-6 space-y-6 overflow-hidden flex flex-col">
+          <div className="flex-1 p-3 sm:p-6 space-y-4 sm:space-y-6 overflow-hidden flex flex-col">
             {/* Chat History */}
             {showChatHistory && (
               <div className="flex-1 min-h-0">
@@ -326,10 +330,10 @@ const EgoAssistant = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div className={`transition-all duration-300 ${
+        <div className={`transition-all duration-500 ease-in-out ${
           showRightSidebar ? 'w-80' : 'w-0'
-        } overflow-hidden`}>
-          <div className="w-80 h-full bg-black/20 backdrop-blur-xl border-l border-white/10 p-4">
+        } overflow-hidden animate-slide-in-right`}>
+          <div className="w-80 h-full bg-black/30 backdrop-blur-2xl border-l border-white/20 p-4">
             <CustomizationPanel
               customization={customization}
               onCustomizationChange={updateCustomization}

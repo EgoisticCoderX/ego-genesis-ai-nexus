@@ -100,10 +100,10 @@ const SmartInputArea: React.FC<SmartInputAreaProps> = ({
       {/* Mode Tabs */}
       <Card className="p-3 bg-card border-border">
         <Tabs value={getModeValue()} onValueChange={handleModeChange} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="normal" className="text-xs">Normal</TabsTrigger>
-            <TabsTrigger value="think" className="text-xs">Think</TabsTrigger>
-            <TabsTrigger value="search" className="text-xs">Web Search</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 h-10">
+            <TabsTrigger value="normal" className="text-sm">Normal</TabsTrigger>
+            <TabsTrigger value="think" className="text-sm">Think</TabsTrigger>
+            <TabsTrigger value="search" className="text-sm">Web Search</TabsTrigger>
           </TabsList>
         </Tabs>
       </Card>

@@ -14,7 +14,7 @@ import SmartInputArea from './SmartInputArea';
 import QuotaManager from './QuotaManager';
 import ThemeToggle from './ThemeToggle';
 import AuthModal from './AuthModal';
-import AIBehaviorPanel from './AIBehaviorPanel';
+import CustomizationPanel from './CustomizationPanel';
 import { useEgoStore } from '../hooks/useEgoStore';
 
 const EgoAssistant = () => {
@@ -179,10 +179,10 @@ const EgoAssistant = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowChatHistory(!showChatHistory)}
-              className="flex items-center gap-2"
+              className={`flex items-center gap-2 ${showChatHistory ? 'bg-accent' : ''}`}
             >
               <History className="h-4 w-4" />
-              History
+              {showChatHistory ? 'Hide History' : 'Show History'}
             </Button>
             
             <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -312,7 +312,9 @@ const EgoAssistant = () => {
           showRightSidebar ? 'w-80' : 'w-0'
         } overflow-hidden`}>
           <div className="p-4 h-full">
-            <AIBehaviorPanel
+            <CustomizationPanel
+              customization={customization}
+              onCustomizationChange={updateCustomization}
               voiceOutput={voiceOutput}
               onVoiceOutputToggle={setVoiceOutput}
               behavior={behavior}
